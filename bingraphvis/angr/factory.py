@@ -7,7 +7,7 @@ class AngrVisFactory(object):
     def __init__(self):
         pass
 
-    def default_cfg_pipeline(self, cfg, asminst=False, vexinst=False, remove_path_terminator=True, color_edges=True, comments=True):
+    def default_cfg_pipeline(self, cfg, asminst=False, vexinst=False, sootinst=False, remove_path_terminator=True, color_edges=True, comments=True):
         project = cfg.project
         vis = Vis()
         vis.set_source(AngrCFGSource())
@@ -26,6 +26,10 @@ class AngrVisFactory(object):
                     vis.add_content_annotator(AngrCommentsAsm(project))
         if vexinst:
             vis.add_content(AngrVex(project))
+            if color_edges:
+                vis.add_edge_annotator(AngrColorEdgesVex())
+        elif sootinst:
+            vis.add_content(AngrSoot(project))
             if color_edges:
                 vis.add_edge_annotator(AngrColorEdgesVex())
         elif asminst:

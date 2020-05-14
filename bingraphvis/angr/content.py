@@ -286,6 +286,54 @@ class AngrAsm(Content):
             'columns': self.get_columns(),
         }
 
+
+class AngrSoot(Content):
+    def __init__(self, project):
+        super(AngrSoot, self).__init__('asm', ['addr', 'instruction'])
+        self.project = project
+
+    def gen_render(self, n):
+        node = n.obj
+
+        if type(node).__name__ == 'CFGNode' or type(node).__name__ == 'CFGNodeA' or type(node).__name__ == 'CFGENode':
+            pass
+        else:
+            return
+
+        addr = node.addr
+        size = node.size
+
+        try:
+            block = self.project.factory.block(addr=addr)
+            start_addr = addr.stmt_idx
+            end_addr = start_addr + size
+            insns = block.soot.statements[start_addr:end_addr]
+        except Exception as e:
+            print(e)
+            # TODO add logging
+            insns = []
+
+        data = []
+        for i, ins in enumerate(insns):
+            data.append({
+                'addr': {
+                    'content': "(%d:%d):\t" % (addr.block_idx, start_addr+i),
+                    'align': 'LEFT'
+                },
+                'instruction': {
+                    'content': str(ins),
+                    'align': 'LEFT'
+                },
+                '_ins': ins,
+                '_addr': i
+            })
+
+        n.content[self.name] = {
+            'data': data,
+            'columns': self.get_columns(),
+        }
+
+
 class AngrAIL(Content):
     def __init__(self, project):
         super(AngrAIL, self).__init__('ail', ['addr', 'stmt'])
