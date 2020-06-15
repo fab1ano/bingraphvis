@@ -24,10 +24,10 @@ class AngrCFGHead(Content):
         n.content[self.name] = {
             'data': [{
                 'addr': {
-                    'content': "{:#08x}".format(node.addr),
+                    'content': "{:#08x}".format(node.addr) if type(node.addr) is int else "",
                 },
                 'func_addr' : {
-                    'content': "({:#08x})".format(node.function_address),
+                    'content': ("({:#08x})".format(node.function_address)) if type(node.function_address) is int else "",
                 },
                 'name': {
                     'content': node.name, 
